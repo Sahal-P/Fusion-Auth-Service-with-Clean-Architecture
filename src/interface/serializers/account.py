@@ -2,9 +2,24 @@ from marshmallow import Schema, fields, validate, validates, validates_schema, E
 from marshmallow.decorators import post_load
 from marshmallow.exceptions import ValidationError
 import re
-from src.domain.services.account import decode_access_token, generate_password_hash
+from src.domain.services.account import decode_access_token, generate_password_hash, decode_refresh_token
 from src.domain.exceptions import InvalidToken
 
+class UserSerializer(Schema):
+    id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    username = fields.String(required=True)
+    email = fields.Email(required=True)
+    is_active = fields.Boolean(required=True)
+    last_login = fields.DateTime(required=True)
+
+    def load(self, data: dict) -> dict:
+        try:
+            data = super().load(data)
+        except ValidationError as err:
+            data = {'errors': err.messages}
+        return data
+    
 class NewUserSerializer(Schema):
     email = fields.Email(required=True)
 
@@ -40,6 +55,25 @@ class TokenSerializer(Schema):
     def make_payload(self, data: dict, **kwargs) -> dict:
         try:
             data['payload'] = decode_access_token(data['token'])
+            
+        except InvalidToken as err:
+            data = {'errors': err.message}
+        return data
+
+class RefreshTokenSerializer(Schema):
+    token = fields.String(required=True)
+    
+    def load(self, data: str) -> str:
+        try:
+            data = super().load(data)
+        except ValidationError as err:
+            data = {'errors': err.messages}
+        return data
+    
+    @post_load
+    def make_payload(self, data: dict, **kwargs) -> dict:
+        try:
+            data['payload'] = decode_refresh_token(data['token'])
             
         except InvalidToken as err:
             data = {'errors': err.message}

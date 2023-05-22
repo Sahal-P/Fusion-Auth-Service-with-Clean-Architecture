@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-nt&y49p9xf4v&_mqfo)08i$&5z$2h+*&qb1=l%8qz68c$d%m!d
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ["fusion.dev","127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -41,6 +41,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# SESSION_COOKIE_SAMESITE = 'None'
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = False  # Set to True in production over HTTPS
+
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
@@ -52,7 +57,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
+    'EXCEPTION_HANDLER':'src.domain.services.account.status_code_handler',
 }
+
+
 
 ROOT_URLCONF = 'src.infrastructure.server.urls'
 
@@ -77,13 +85,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'src.infrastructure.server.wsgi.application'
 
-# CORS_ALLOWED_ORIGINS = [
+# CORS_ORIGIN_WHITELIST = [
 #     "http://127.0.0.1.8000",
 #     "https://fusion.dev",
-#     "http://localhost:8000",
+#     "http://localhost:3000",
 # ]
-CORS_ALLOW_ALL_ORIGINS=True
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_ALL_ORIGINS=True
+
 # CORS_REPLACE_HTTPS_REFERER = True
 
 
@@ -135,3 +143,55 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            '()': 'colorlog.ColoredFormatter',
+            'format': '[%(log_color)s%(levelname)s%(reset)s] %(asctime)s [%(name)s %(funcName)s %(lineno)d] %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'log_colors': {
+                'DEBUG': 'blue',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'bold_red',
+            },
+            'secondary_log_colors': {
+                'message': {
+                    'DEBUG': 'blue',
+                    'INFO': 'green',
+                    'WARNING': 'yellow',
+                    'ERROR': 'red',
+                    'CRITICAL': 'bold_red',
+                }
+            }
+        },
+        'simple': {
+            'format': '[%(levelname)s] %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    },
+}

@@ -25,4 +25,18 @@ user_router.register([
         method='get_user',
         name='get_user',
     ),
+    Route(
+        http_verb=HTTP_VERB_POST,
+        path=r'^account/users/token/refresh/$',
+        controller= UserController,
+        method='refresh_token',
+        name='refresh_token',
+    ),
+    Route(
+        http_verb=HTTP_VERB_POST,
+        path=r'^account/users/logout/$',
+        controller= UserController,
+        method='logout',
+        name='log_out',
+    ),
 ])

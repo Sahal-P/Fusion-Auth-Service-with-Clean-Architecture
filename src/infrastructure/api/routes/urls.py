@@ -8,3 +8,4 @@ from django.urls import path
 urlpatterns = [
     path('', include(f'{settings.API_ROUTES}.account.urls'))
 ]
+# handler404 = 'src.infrastructure.api.views.account.NotFoundAPIException'

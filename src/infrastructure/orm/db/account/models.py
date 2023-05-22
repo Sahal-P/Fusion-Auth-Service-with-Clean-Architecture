@@ -6,14 +6,14 @@ from django.utils.translation import gettext_lazy
 from src.domain.entities.account import UserEntity
 
 class User(models.Model):
-    name        = models.CharField(gettext_lazy('name'), max_length=100, blank=True)
-    surname     = models.CharField(gettext_lazy('surname'), max_length=100, blank=True, null=True)
-    username    = models.CharField(gettext_lazy('username'), max_length=20, blank=True)
-    email       = models.EmailField(gettext_lazy('email'), db_index=True, unique=True)
-    phone       = models.CharField(gettext_lazy('phone'),max_length=15, unique=True)
-    password    = models.CharField(gettext_lazy('password'), max_length=64)
-    is_active   = models.BooleanField(gettext_lazy('active'), default=True)
-    last_login  = models.DateTimeField(gettext_lazy('last login'), default=timezone.now)
+    name = models.CharField(gettext_lazy('name'), max_length=100, blank=True)
+    surname = models.CharField(gettext_lazy('surname'), max_length=100, blank=True, null=True)
+    username = models.CharField(gettext_lazy('username'), max_length=20, blank=True)
+    email = models.EmailField(gettext_lazy('email'), db_index=True, unique=True)
+    phone = models.CharField(gettext_lazy('phone'),max_length=15, unique=True)
+    password = models.CharField(gettext_lazy('password'), max_length=64)
+    is_active = models.BooleanField(gettext_lazy('active'), default=True)
+    last_login = models.DateTimeField(gettext_lazy('last login'), default=timezone.now)
     date_joined = models.DateTimeField(gettext_lazy('date joined'), default=timezone.now)
     
     class Meta:
@@ -28,3 +28,10 @@ class User(models.Model):
         fields = fields or [str(field) for field in UserEntity.__dataclass_fields__]
         attrs = {field: getattr(self, field) for field in fields}
         return UserEntity(**attrs)
+    
+class UserToken(models.Model):
+    user_id = models.IntegerField()
+    token = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_admin = models.BooleanField(default=False)
+    expired_at = models.DateTimeField()

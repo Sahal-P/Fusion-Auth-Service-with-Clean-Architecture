@@ -1,7 +1,11 @@
 from rest_framework import exceptions
+from rest_framework.response import Response
+from rest_framework.views import exception_handler
+from rest_framework import status
 import jwt
 import datetime
 import hashlib
+from django.http import Http404
 from src.domain.services.constants import JWT_ALGORITHM, JWT_ACCESS_EXP_DELTA_SECONDS, JWT_REFRESH_DAYS, JWT_KEY, JWT_REFRESH_KEY
 from src.domain.entities.account import TokenEntity
 
@@ -44,3 +48,14 @@ def create_refresh_token(id):
 
 def generate_password_hash(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
+
+def status_code_handler(exc, context):
+    response = exception_handler(exc, context)
+    print(response)
+    if isinstance(exc, (exceptions.AuthenticationFailed, exceptions.NotAuthenticated)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+    if isinstance(exc, Http404 ):
+        return Response({"detail": "mmmPage not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+    return response
