@@ -7,6 +7,9 @@ from src.domain.services.account import create_access_token, create_refresh_toke
 from src.interface.serializers.account import UserRegisterSerializer, NewUserSerializer, UserLoginSerializer, TokenSerializer, RefreshTokenSerializer, UserSerializer
 from src.interface.middlewares.auth import Jwt_auth_required 
 from colorama import Fore
+import json
+from dataclasses import asdict
+
 
 logger = logging.getLogger(__name__)
 
@@ -28,15 +31,17 @@ class UserController:
         except Exception as err:
             logger.error("Error Login user with params: %s", str(params), err)
             raise exceptions.AuthenticationFailed('User does not exits with this data')
-            
-        
+        print(user,'user entity ----------------')
         token = create_access_token(user.id)
+        payload = {
+            "user": UserSerializer().dump(user),
+            "token": TokenSerializer().dump(token)
+            }
+        
         refresh = TokenSerializer().dump(create_refresh_token(user.id))
         user = self.user_interactor.update(user.id, refresh)
-        
         logger.info(f'{Fore.LIGHTGREEN_EX}User succesfully logged in - %s', str(token))
-        
-        return TokenSerializer().dump(token), refresh, HTTPStatus.OK.value
+        return payload, refresh, HTTPStatus.OK.value
 
     def register(self, params: dict) -> Tuple[dict, int]:
         

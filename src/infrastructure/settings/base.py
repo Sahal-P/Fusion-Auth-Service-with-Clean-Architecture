@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'src.infrastructure.server.wsgi.application'
 #     "https://fusion.dev",
 #     "http://localhost:3000",
 # ]
-# CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOW_ALL_ORIGINS=True
 
 # CORS_REPLACE_HTTPS_REFERER = True
 
@@ -147,6 +147,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+KAFKA_BOOTSTRAP_SERVERS = 'kafka-srv:9092'  # Kafka broker address
+KAFKA_TOPIC = 'my_topic'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -195,3 +198,4 @@ LOGGING = {
         }
     },
 }
+

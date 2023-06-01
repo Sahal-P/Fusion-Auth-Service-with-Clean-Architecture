@@ -10,10 +10,10 @@ DEBUG = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'auth_database',
-        'USER': 'auth_user',
-        'PASSWORD': 'auth_password',
-        'HOST': 'postgres_auth',
+        'NAME': 'fusion_auth',
+        'USER': 'postgres',
+        'PASSWORD': '09876',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

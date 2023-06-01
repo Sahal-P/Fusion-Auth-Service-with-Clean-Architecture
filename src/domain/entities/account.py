@@ -7,13 +7,15 @@ class UserEntity:
     surname: str = None
     username: str = None
     email: str = None
+    phone: str = None
     password: str = None
     is_active: bool = False
     last_login: str = None
     date_joined: str = None
     
-    def __post_init__(self):
-        pass
+    # def __post_init__(self):
+    #     my_dict = {self.id: 'value'}  # Example of using `id` as a key
+    #     my_set = {self.id}
 
 @dataclass
 class TokenEntity:

@@ -9,9 +9,11 @@ class UserSerializer(Schema):
     id = fields.Integer(required=True)
     name = fields.String(required=True)
     username = fields.String(required=True)
+    phone = fields.String(required=True)
     email = fields.Email(required=True)
     is_active = fields.Boolean(required=True)
     last_login = fields.DateTime(required=True)
+    date_joined = fields.DateTime(required=True)
 
     def load(self, data: dict) -> dict:
         try:
@@ -81,13 +83,13 @@ class RefreshTokenSerializer(Schema):
     
 
 class UserRegisterSerializer(Schema):
-    name        = fields.String(required=True, validate=validate.Length(min=3,max=15))
-    surname     = fields.String(validate=validate.Length(min=3,max=15))
-    username    = fields.String(required=True, validate=validate.Length(min=3,max=10))
-    email       = fields.String(required=True, validate=validate.Length(min=5,max=50))
-    phone       = fields.String(required=True, validate=validate.Length(min=10,max=15))
-    email       = fields.Email(required=True)
-    password    = fields.String(required=True, validate=validate.Length(min=8, max=20))
+    name = fields.String(required=True, validate=validate.Length(min=3,max=15))
+    surname = fields.String(validate=validate.Length(min=3,max=15))
+    username = fields.String(required=True, validate=validate.Length(min=3,max=10))
+    email = fields.String(required=True, validate=validate.Length(min=5,max=50))
+    phone = fields.String(required=True, validate=validate.Length(min=10,max=15))
+    email = fields.Email(required=True)
+    password = fields.String(required=True, validate=validate.Length(min=8, max=20))
     password_confirm = fields.String(required=True, validate=validate.Length(min=8, max=20))
     
     @staticmethod
@@ -123,4 +125,20 @@ class UserRegisterSerializer(Schema):
     def make_password_hash(self, data: dict, **kwargs) -> dict:
         data.pop('password_confirm')
         data['password'] = generate_password_hash(data['password'])
+        return data
+    
+class UserCreatedQueueSerializer(Schema):
+    id = fields.Integer(required=True)
+    name = fields.String(required=True)
+    surname = fields.String()
+    username = fields.String(required=True)
+    phone = fields.String(required=True)
+    email = fields.Email(required=True)
+
+
+    def load(self, data: dict) -> dict:
+        try:
+            data = super().load(data)
+        except ValidationError as err:
+            data = {'errors': err.messages}
         return data

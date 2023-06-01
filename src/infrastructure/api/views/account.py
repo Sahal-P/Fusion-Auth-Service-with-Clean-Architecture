@@ -1,6 +1,7 @@
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from src.domain.services.producer import produce_messages
 
 from src.interface.controllers.account import UserController
 
@@ -12,7 +13,8 @@ class UserViewSet(ViewSet):
     def controller(self) -> UserController:
         return self.viewset_factory.create()
     
-    def login(self, request: Request, *args, **kwargs) -> Response:        
+    def login(self, request: Request, *args, **kwargs) -> Response:   
+        # produce_message('new-user','hi this is new ------------')     
         data = request.data
         payload, refresh, status = self.controller.login(data)
             

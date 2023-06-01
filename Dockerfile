@@ -16,5 +16,6 @@ RUN pip install -r requirements.txt
 # Copy the rest of the application code into the container at /app
 COPY . /app/
 
+
 # Set the command to start the application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

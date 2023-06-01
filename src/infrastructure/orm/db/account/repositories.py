@@ -1,10 +1,12 @@
 from django.db.utils import IntegrityError
 from django.utils import timezone
 import datetime
+from src.interface.serializers.account import UserCreatedQueueSerializer
 from src.domain.entities.account import UserEntity, TokenEntity
 from src.infrastructure.orm.db.account.models import User, UserToken
 from rest_framework import exceptions
 from src.domain.exceptions import EntityDuplicate, EntityDoesNotExist, InvalidToken
+from src.domain.services.producer import produce_messages
 
 class UserDataBaseRepository:
     
@@ -14,8 +16,12 @@ class UserDataBaseRepository:
                                        phone=phone, username=username, 
                                        name=name, surname=surname  
                                     )
+            data = UserCreatedQueueSerializer().dump(user)
+            print(data,'----------------------------------------------')
+            produce_messages('user-created',data)
         except IntegrityError:
             raise EntityDuplicate(message="Already exitst a user with this data.")
+        
         # except Exception as e:
         #     raise e
         return user.map(fields=['id', 'email'])
@@ -26,7 +32,7 @@ class UserDataBaseRepository:
         except User.DoesNotExist:
             raise EntityDoesNotExist(message='User does not exits with this data')
             # raise exceptions.NotAuthenticated('User does not exits with this data')
-        return user.map(fields=['id', 'username', 'email', 'is_active', 'last_login'])
+        return user.map(fields=['id','name', 'phone', 'username', 'email', 'is_active', 'last_login','date_joined'])
     
     def update(self, user_id: int, data: dict) -> UserEntity:
         user = User.objects.get(pk=user_id)
