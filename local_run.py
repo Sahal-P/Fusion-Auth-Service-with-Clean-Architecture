@@ -5,10 +5,9 @@ import sys
 
 
 def Local():
-    """Run administrative tasks."""
-    env = 'local_run'
-    settings_module = f'src.infrastructure.settings.{env}'
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+    env = "local_run"
+    settings_module = f"src.infrastructure.settings.{env}"
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -20,5 +19,5 @@ def Local():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Local()
