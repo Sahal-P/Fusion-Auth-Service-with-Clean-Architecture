@@ -9,12 +9,13 @@ from rest_framework import exceptions
 
 logger = logging.getLogger(__name__)
 
+
 def Jwt_auth_required(func: Callable) -> Tuple[dict, int]:
     @wraps(func)
     def verify_auth_token(*args, **kwargs) -> Tuple[dict, int]:
-        token = kwargs.get('token')
+        token = kwargs.get("token")
         if not token:
-            raise exceptions.NotAuthenticated('unauthenticated')
+            raise exceptions.NotAuthenticated("unauthenticated")
         try:
             # token = token.split()
             # print(len(token))
@@ -22,7 +23,8 @@ def Jwt_auth_required(func: Callable) -> Tuple[dict, int]:
             decode_access_token(token)
             # raise exceptions.AuthenticationFailed('unauthenticated')
         except InvalidToken as e:
-            logger.exception('Invalid Token')
-            return {'error': f'{e.message}: {token}'}, HTTPStatus.UNAUTHORIZED.value
+            logger.exception("Invalid Token")
+            return {"error": f"{e.message}: {token}"}, HTTPStatus.UNAUTHORIZED.value
         return func(*args, **kwargs)
+
     return verify_auth_token
